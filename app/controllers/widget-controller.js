@@ -16,7 +16,8 @@ export default {
 
   async create(req, res) {
     const widget = new Widget(req.body);
-    await widget.save();
+    const status = await widget.save();
+    if(!status) return res.send(layout({ title: 'New Widget', widget }, form));
     return res.redirect('/');
   },
 
@@ -28,7 +29,8 @@ export default {
   async update(req, res) {
     const widget = await Widget.find(req.params.id);
     widget.update(req.body);
-    await widget.save();
+    const status = await widget.save();
+    if(!status) return res.send(layout({ title: 'New Widget', widget }, form));
     return res.redirect('/');
   },
 };
