@@ -1,5 +1,5 @@
 export default function form({ widget }) {
-  const { id, name, purpose, active } = widget;
+  const { id, name, purpose, active, error } = widget;
 
   return `
     <h2>${id ? `Edit Widget #${id}` : 'New Widget'}</h2>
@@ -9,6 +9,7 @@ export default function form({ widget }) {
         <label for="name" class="form-label">Widget Name</label>
         <input type="text" class="form-control" id="name" name="name" value="${name}">
       </div>
+      ${error ? `<label for="error" class="form-label" style="color: red;">${error}</label>` : ''}
       <div class="mb-3">
         <label for="purpose" class="form-label">Purpose</label>
         <textarea class="form-control" id="purpose" name="purpose">${purpose}</textarea>

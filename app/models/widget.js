@@ -8,11 +8,12 @@ export default class Widget {
     this.name = name || '';
     this.purpose = purpose || '';
     this.active = ['true', true].includes(active);
-    this.errors = {
-      active: [],
-      name: [],
-      purpose: [],
-    };
+    // this.errors = {
+    //   active: [],
+    //   name: [],
+    //   purpose: [],
+    // };
+    this.error = '';
   }
 
   static async find(id) {
@@ -26,7 +27,10 @@ export default class Widget {
 
   static async findAll() {
     const records = await db.read();
-    return records.map(r => new Widget(r));
+    return records.map(r => {
+      if(!r.active) r.purpose = "";
+      return new Widget(r);
+    });
   }
 
   update(values) {
@@ -35,7 +39,18 @@ export default class Widget {
   }
 
   async save() {
+    if (!this.name) {
+      Object.assign(this, { error: "This field is required." });
+      return false;
+    }
+
     const records = await db.read();
+    const record = records.find(r => r.name === this.name);
+    if (record && record.id !== this.id) {
+      Object.assign(this, { error: "This name is already used." });
+      return false;
+    }
+
 
     if (!this.id) {
       const highestId = Math.max(...records.map(r => r.id).concat(0));
